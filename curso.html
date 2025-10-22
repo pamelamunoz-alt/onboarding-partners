@@ -15,11 +15,7 @@
       --gris-bloqueado: #555;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       display: flex;
@@ -27,7 +23,7 @@
       font-family: "Poppins", sans-serif;
       background-color: var(--gris-oscuro);
       color: var(--blanco);
-      overflow-x: hidden; /* ✅ Permite scroll vertical */
+      overflow-x: hidden;
     }
 
     /* --- SIDEBAR --- */
@@ -59,11 +55,7 @@
       margin-bottom: 10px;
     }
 
-    .timeline {
-      position: relative;
-      margin-top: 10px;
-    }
-
+    .timeline { position: relative; margin-top: 10px; }
     .timeline::before {
       content: "";
       position: absolute;
@@ -81,6 +73,7 @@
       margin-bottom: 25px;
       padding-left: 40px;
       transition: 0.3s ease;
+      cursor: pointer;
     }
 
     .module.locked {
@@ -88,9 +81,7 @@
       cursor: not-allowed;
     }
 
-    .module.locked i {
-      color: var(--gris-bloqueado);
-    }
+    .module.locked i { color: var(--gris-bloqueado); }
 
     .module.active {
       color: var(--rosa);
@@ -114,16 +105,8 @@
       color: var(--blanco);
     }
 
-    .module i {
-      margin-right: 10px;
-      color: var(--rosa);
-    }
-
-    .duration {
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.5);
-      margin-top: 2px;
-    }
+    .module i { margin-right: 10px; color: var(--rosa); }
+    .duration { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
 
     /* --- CONTENIDO --- */
     .content {
@@ -168,7 +151,14 @@
       clip-path: inset(3px 0 3px 0 round 15px);
     }
 
-    /* --- BOTÓN --- */
+    .repaso-msg {
+      color: var(--rosa);
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
     .next-btn {
       background-color: var(--rosa);
       color: var(--blanco);
@@ -186,21 +176,12 @@
       transform: scale(1.05);
     }
 
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background-color: var(--rosa); border-radius: 10px; }
 
-    ::-webkit-scrollbar-thumb {
-      background-color: var(--rosa);
-      border-radius: 10px;
-    }
-
-    /* ✅ Tablets */
+    /* Responsive */
     @media (max-width: 900px) {
-      body {
-        flex-direction: column;
-      }
-
+      body { flex-direction: column; }
       .sidebar {
         width: 100%;
         height: auto;
@@ -210,50 +191,17 @@
         gap: 15px;
         padding: 15px;
       }
-
-      .content {
-        padding: 20px;
-      }
-
-      .video-container {
-        height: 320px;
-      }
-
-      .video-title {
-        font-size: 1.2rem;
-      }
+      .content { padding: 20px; }
+      .video-container { height: 320px; }
+      .video-title { font-size: 1.2rem; }
     }
 
-    /* ✅ Móviles */
     @media (max-width: 600px) {
-      .sidebar {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .logo-container img {
-        width: 100px;
-      }
-
-      .sidebar h2 {
-        font-size: 1rem;
-        text-align: center;
-      }
-
-      .video-title {
-        font-size: 1.1rem;
-        margin-bottom: 10px;
-      }
-
-      .video-container {
-        height: 220px;
-        border-radius: 12px;
-      }
-
-      .next-btn {
-        padding: 10px 24px;
-        font-size: 0.9rem;
-      }
+      .sidebar { flex-wrap: wrap; justify-content: center; }
+      .logo-container img { width: 100px; }
+      .video-title { font-size: 1.1rem; margin-bottom: 10px; }
+      .video-container { height: 220px; border-radius: 12px; }
+      .next-btn { padding: 10px 24px; font-size: 0.9rem; }
     }
   </style>
 </head>
@@ -311,6 +259,7 @@
 
   <!-- CONTENIDO -->
   <main class="content">
+    <div id="repasoMsg" class="repaso-msg" style="display:none;">Estás en modo repaso. Todos los videos están disponibles.</div>
     <div class="video-title" id="videoTitle">Confirmación y proceso de órdenes</div>
     <div class="video-container">
       <iframe id="videoFrame"
@@ -323,20 +272,31 @@
   </main>
 
   <script>
+    // 🧠 Detectar si el usuario viene del modo libre
+    const modoLibre = localStorage.getItem("modoLibre") === "true";
     let currentModule = parseInt(localStorage.getItem("currentModule")) || 1;
 
     function updateModules() {
       const modules = document.querySelectorAll(".module");
       modules.forEach((mod, index) => {
         const step = index + 1;
-        if (step <= currentModule) {
+        if (modoLibre) {
           mod.classList.remove("locked");
           mod.onclick = () => changeVideo(mod);
         } else {
-          mod.classList.add("locked");
-          mod.onclick = null;
+          if (step <= currentModule) {
+            mod.classList.remove("locked");
+            mod.onclick = () => changeVideo(mod);
+          } else {
+            mod.classList.add("locked");
+            mod.onclick = null;
+          }
         }
       });
+
+      if (modoLibre) {
+        document.getElementById("repasoMsg").style.display = "block";
+      }
     }
 
     function changeVideo(mod) {
