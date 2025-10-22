@@ -178,8 +178,9 @@
     }
 
     function finishCourse() {
-      alert("🎉 ¡Gracias por completar el curso de capacitación! 🎉");
-      window.location.href = "gracias.html"; // puedes cambiar por tu página final
+      // ✅ Limpia el progreso y redirige al cierre del curso
+      localStorage.clear();
+      window.location.href = "agradecimientos.html";
     }
   </script>
 
