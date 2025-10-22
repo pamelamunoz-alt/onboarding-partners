@@ -190,11 +190,11 @@
   <script>
   // ✅ Clave de respuestas correctas
   const correctAnswers = {
-    q1: "b", // Aceptar pedido
-    q2: "d", // Se cancela automáticamente
-    q3: "a", // Ayuda en línea
-    q4: "c", // Marcar "Listo"
-    q5: "a"  // Pedido de prueba
+    q1: "b",
+    q2: "d",
+    q3: "a",
+    q4: "c",
+    q5: "a"
   };
 
   function getAnswer(name) {
@@ -207,7 +207,6 @@
     const answers = {};
     let missing = [];
 
-    // Leer respuestas una por una, sin RadioNodeList.value
     for (const k of keys) {
       const v = getAnswer(k);
       if (v === null) missing.push(k);
@@ -219,40 +218,29 @@
       return;
     }
 
-    // Calcular score y recolectar incorrectas
     let score = 0;
-    const wrong = [];
     for (const k of keys) {
-      if (answers[k] === correctAnswers[k]) {
-        score++;
-      } else {
-        wrong.push(k);
-      }
+      if (answers[k] === correctAnswers[k]) score++;
     }
 
-    // Mostrar resultado
     const total = keys.length;
+    const passingScore = total === 5 ? 3 : 2; // ✅ 3 correctas de 5 o 2 de 3
     const result = document.getElementById("result");
     const nextBtn = document.getElementById("nextModuleBtn");
     const submitBtn = document.getElementById("submitBtn");
 
-    if (wrong.length) {
-      // Texto bonito con qué preguntas estuvieron mal (1-indexadas)
-      const wrongList = wrong.map(k => Number(k.slice(1))).sort((a,b)=>a-b).join(", ");
-      result.textContent = `Tu puntaje: ${score} / ${total} — Revisa las preguntas: ${wrongList}.`;
-      nextBtn.style.display = "none";
-      submitBtn.style.display = "block";
-    } else {
-      result.textContent = `Tu puntaje: ${score} / ${total}`;
-      // Desbloquear siguiente módulo
+    if (score >= passingScore) {
+      result.textContent = `✅ ¡Gracias por participar! Tu puntaje: ${score} / ${total}`;
       submitBtn.style.display = "none";
       nextBtn.style.display = "block";
       nextBtn.style.animation = "fadeIn 0.8s ease forwards";
+    } else {
+      result.textContent = `❌ Tu puntaje fue ${score}/${total}. Inténtalo de nuevo.`;
+      nextBtn.style.display = "none";
     }
 
-    // Guardar score (por si lo usas después)
-    localStorage.setItem("quiz1_score", score);
+    localStorage.setItem("quiz_score", score);
   }
-</script>
+  </script>
 </body>
 </html>
