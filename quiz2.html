@@ -188,12 +188,13 @@
   </div>
 
   <script>
+    // ✅ Respuestas correctas
     const correctAnswers = {
-      q1: "d", 
-      q2: "b", 
-      q3: "c", 
-      q4: "d", 
-      q5: "a"  
+      q1: "d",
+      q2: "b",
+      q3: "c",
+      q4: "d",
+      q5: "a"
     };
 
     function getAnswer(name) {
@@ -218,27 +219,24 @@
       }
 
       let score = 0;
-      const wrong = [];
       for (const k of keys) {
         if (answers[k] === correctAnswers[k]) score++;
-        else wrong.push(k);
       }
 
       const total = keys.length;
+      const passingScore = total === 5 ? 3 : 2; // ✅ mínimo 3 correctas de 5 o 2 de 3
       const result = document.getElementById("result");
       const nextBtn = document.getElementById("nextModuleBtn");
       const submitBtn = document.getElementById("submitBtn");
 
-      if (wrong.length) {
-        const wrongList = wrong.map(k => Number(k.slice(1))).join(", ");
-        result.textContent = `Tu puntaje: ${score} / ${total} — Revisa las preguntas: ${wrongList}.`;
-        nextBtn.style.display = "none";
-        submitBtn.style.display = "block";
-      } else {
+      if (score >= passingScore) {
         result.textContent = `Tu puntaje: ${score} / ${total}`;
         submitBtn.style.display = "none";
         nextBtn.style.display = "block";
         nextBtn.style.animation = "fadeIn 0.8s ease forwards";
+      } else {
+        result.textContent = `Tu puntaje fue ${score}/${total}. Inténtalo nuevamente.`;
+        nextBtn.style.display = "none";
       }
 
       localStorage.setItem("quiz2_score", score);
