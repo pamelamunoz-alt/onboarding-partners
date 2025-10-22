@@ -120,7 +120,7 @@
         <h3>2. ¿Qué consecuencias puede tener rechazar pedidos frecuentemente?</h3>
         <label><input type="radio" name="q2" value="a">Aumentar la visibilidad del local</label>
         <label><input type="radio" name="q2" value="b">Desactivar el POS automáticamente</label>
-        <label><input type="radio" name="q2" value="c">Provocar demoras en la plataforma y afectar la asignación normal de los pedido</label>
+        <label><input type="radio" name="q2" value="c">Provocar demoras en la plataforma y afectar la asignación normal de los pedidos</label>
         <label><input type="radio" name="q2" value="d">Afectar la experiencia del cliente y generar un posible cargo</label>
       </div>
 
@@ -142,9 +142,9 @@
 
   <script>
     const correctAnswers = {
-      q1: "b", 
-      q2: "d", 
-      q3: "a"  
+      q1: "b",
+      q2: "d",
+      q3: "a"
     };
 
     function getAnswer(name) {
@@ -155,29 +155,26 @@
     function checkQuiz() {
       const keys = Object.keys(correctAnswers);
       let score = 0;
-      const wrong = [];
 
       for (const k of keys) {
         const v = getAnswer(k);
         if (!v) return alert("Por favor, responde todas las preguntas antes de enviar.");
         if (v === correctAnswers[k]) score++;
-        else wrong.push(k);
       }
 
       const total = keys.length;
+      const passingScore = total === 5 ? 3 : 2; // ✅ 3 correctas de 5, 2 correctas de 3
       const result = document.getElementById("result");
       const nextBtn = document.getElementById("nextModuleBtn");
       const submitBtn = document.getElementById("submitBtn");
 
-      if (wrong.length) {
-        const wrongList = wrong.map(k => Number(k.slice(1))).join(", ");
-        result.textContent = `Tu puntaje: ${score}/${total} — Revisa las preguntas: ${wrongList}.`;
-        nextBtn.style.display = "none";
-        submitBtn.style.display = "block";
-      } else {
-        result.textContent = `Tu puntaje: ${score}/${total}`;
+      if (score >= passingScore) {
+        result.textContent = `Tu puntaje: ${score} / ${total}`;
         submitBtn.style.display = "none";
         nextBtn.style.display = "block";
+      } else {
+        result.textContent = `Tu puntaje fue ${score}/${total}. Inténtalo nuevamente.`;
+        nextBtn.style.display = "none";
       }
 
       localStorage.setItem("quiz4_score", score);
