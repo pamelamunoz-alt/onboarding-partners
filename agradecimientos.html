@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>¡Gracias por participar! | PedidosYa</title>
+  <title>¡Gracias por participar! | PedidosYa Partners</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -85,18 +85,20 @@
   <div class="container">
     <h1>🎉 ¡Gracias por participar! 🎉</h1>
     <p>
-      Has completado con éxito el curso de capacitación de <strong>PedidosYa Partners</strong>.<br>
-      Agradecemos tu tiempo y dedicación para seguir aprendiendo y mejorando cada día 💪.<br>
-      ¡Sigue creciendo con nosotros!
+      Has completado exitosamente el curso de capacitación de <strong>PedidosYa Partners</strong>.<br><br>
+      Gracias por tu compromiso y entusiasmo.  
+      Recuerda que puedes volver a los módulos cuando lo necesites para repasar los temas o reforzar tus conocimientos. 💪
     </p>
 
-    <button class="btn" onclick="goHome()">Volver al inicio</button>
+    <button class="btn" onclick="goToCourses()">Volver a los cursos</button>
     <p id="countdown">Serás redirigido en 10 segundos...</p>
   </div>
 
   <script>
-    function goHome() {
-      window.location.href = "index.html";
+    function goToCourses() {
+      // 🧹 Limpia progreso y redirige al menú de cursos
+      localStorage.clear();
+      window.location.href = "cursos.html"; // 👈 Cambia aquí si tu archivo se llama distinto (por ej. menu.html)
     }
 
     // ⏳ Redirección automática con cuenta regresiva
@@ -109,11 +111,10 @@
 
       if (timeLeft <= 0) {
         clearInterval(timer);
-        goHome();
+        goToCourses();
       }
     }, 1000);
   </script>
 
 </body>
 </html>
-
