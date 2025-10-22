@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de finalización | PedidosYa Partners</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --rosa: #FA0050;
+      --celeste: #61C8FA;
+      --blanco: #FFFFFF;
+      --gris-fondo: #F7F7F7;
+      --negro: #111217;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: var(--gris-fondo);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: var(--rosa);
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    p {
+      color: var(--negro);
+      text-align: center;
+      margin-bottom: 25px;
+      max-width: 600px;
+    }
+
+    form {
+      background-color: var(--blanco);
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      padding: 30px 40px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--negro);
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-family: "Poppins", sans-serif;
+    }
+
+    button {
+      background-color: var(--rosa);
+      color: var(--blanco);
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 36px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background-color: #ff3377;
+      transform: scale(1.03);
+    }
+
+    #mensaje {
+      margin-top: 20px;
+      font-weight: 600;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>¡Curso completado!</h1>
+  <p>Por favor, completa los siguientes datos para registrar tu participación y recibir tu confirmación de finalización del curso.</p>
+
+  <form id="registroForm">
+    <label for="local">Nombre del local</label>
+    <input type="text" id="local" name="local" placeholder="Ej: La Pizzería de Juan" required>
+
+    <label for="nombre">Nombre del participante</label>
+    <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" required>
+
+    <label for="telefono">Número de teléfono</label>
+    <input type="tel" id="telefono" name="telefono" placeholder="Ej: 55555555" required pattern="[0-9]{4}[0-9]{4}">
+
+    <button type="submit">Enviar registro</button>
+    <div id="mensaje"></div>
+  </form>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxfNuKyw5EN_9WUKqqdQH3WAlBgBPO64qsd2keuATugOMbRlcpC2zTRt1X_fctB7O58xg/exec";
+    const form = document.getElementById("registroForm");
+    const mensaje = document.getElementById("mensaje");
+
+    form.addEventListener("submit", e => {  
+      e.preventDefault();
+      mensaje.textContent = "Enviando registro...";
+      mensaje.style.color = "#FA0050";
+
+      fetch(scriptURL, { method: "POST", body: new FormData(form) })
+        .then(response => {
+          mensaje.textContent = "Registro enviado con éxito. ¡Gracias por completar el curso!";
+          mensaje.style.color = "green";
+          form.reset();
+        })
+        .catch(error => {
+          mensaje.textContent = "Ocurrió un error al enviar el registro.";
+          mensaje.style.color = "red";
+        });
+    });
+  </script>
+
+</body>
+</html>
