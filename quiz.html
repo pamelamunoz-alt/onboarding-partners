@@ -230,12 +230,12 @@
     const submitBtn = document.getElementById("submitBtn");
 
     if (score >= passingScore) {
-      result.textContent = `✅ ¡Gracias por participar! Tu puntaje: ${score} / ${total}`;
+      result.textContent = `Tu puntaje: ${score} / ${total}`;
       submitBtn.style.display = "none";
       nextBtn.style.display = "block";
       nextBtn.style.animation = "fadeIn 0.8s ease forwards";
     } else {
-      result.textContent = `❌ Tu puntaje fue ${score}/${total}. Inténtalo de nuevo.`;
+      result.textContent = `Tu puntaje fue ${score}/${total}. Inténtalo de nuevo.`;
       nextBtn.style.display = "none";
     }
 
@@ -244,3 +244,4 @@
   </script>
 </body>
 </html>
+
