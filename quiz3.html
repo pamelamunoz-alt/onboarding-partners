@@ -158,11 +158,11 @@
 
   <script>
     const correctAnswers = {
-      q1: "b", 
-      q2: "d", 
-      q3: "c", 
-      q4: "d", 
-      q5: "b" 
+      q1: "b",
+      q2: "d",
+      q3: "c",
+      q4: "d",
+      q5: "b"
     };
 
     function getAnswer(name) {
@@ -173,29 +173,26 @@
     function checkQuiz() {
       const keys = Object.keys(correctAnswers);
       let score = 0;
-      const wrong = [];
 
       for (const k of keys) {
         const v = getAnswer(k);
         if (!v) return alert("Por favor, responde todas las preguntas antes de enviar.");
         if (v === correctAnswers[k]) score++;
-        else wrong.push(k);
       }
 
       const total = keys.length;
+      const passingScore = total === 5 ? 3 : 2; // ✅ mínimo 3 correctas de 5 o 2 de 3
       const result = document.getElementById("result");
       const nextBtn = document.getElementById("nextModuleBtn");
       const submitBtn = document.getElementById("submitBtn");
 
-      if (wrong.length) {
-        const wrongList = wrong.map(k => Number(k.slice(1))).join(", ");
-        result.textContent = `Tu puntaje: ${score}/${total} — Revisa las preguntas: ${wrongList}.`;
-        nextBtn.style.display = "none";
-        submitBtn.style.display = "block";
-      } else {
-        result.textContent = `Tu puntaje: ${score}/${total}`;
+      if (score >= passingScore) {
+        result.textContent = `Tu puntaje: ${score} / ${total}`;
         submitBtn.style.display = "none";
         nextBtn.style.display = "block";
+      } else {
+        result.textContent = `Tu puntaje fue ${score}/${total}. Inténtalo nuevamente.`;
+        nextBtn.style.display = "none";
       }
 
       localStorage.setItem("quiz3_score", score);
