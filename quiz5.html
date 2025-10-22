@@ -109,7 +109,7 @@
         <h3>1. ¿Dónde puedes encontrar ayuda o soporte si tienes dudas sobre el sistema?</h3>
         <label><input type="radio" name="q1" value="a">En el centro de soporte con preguntas frecuentes y tutoriales</label>
         <label><input type="radio" name="q1" value="b">En el menú de pedidos, revisando las opciones disponibles dentro del panel principal</label>
-        <label><input type="radio" name="q1" value="c">lamando directamente al motorista asignado para solicitar información</label>
+        <label><input type="radio" name="q1" value="c">Llamando directamente al motorista asignado para solicitar información</label>
         <label><input type="radio" name="q1" value="d">Esperando que el sistema realice una actualización automática</label>
       </div>
 
@@ -134,54 +134,52 @@
 
     <div id="result"></div>
 
-    <button id="nextModuleBtn" onclick="finishCourse()">Siguiente</button>
+    <button id="nextModuleBtn" onclick="finishCourse()">Finalizar curso</button>
   </div>
 
   <script>
     const correctAnswers = {
-      q1: "a", 
-      q2: "d", 
-      q3: "c"  
+      q1: "a",
+      q2: "d",
+      q3: "c"
     };
 
     function getAnswer(name) {
-      const el = document.querySelector(`input[name="${name}"]:checked`);
+      const el = document.querySelector(`input[name='${name}']:checked`);
       return el ? el.value : null;
     }
 
     function checkQuiz() {
       const keys = Object.keys(correctAnswers);
       let score = 0;
-      const wrong = [];
 
       for (const k of keys) {
         const v = getAnswer(k);
         if (!v) return alert("Por favor, responde todas las preguntas antes de enviar.");
         if (v === correctAnswers[k]) score++;
-        else wrong.push(k);
       }
 
       const total = keys.length;
+      const passingScore = total === 5 ? 3 : 2; // ✅ 2 correctas si tiene 3 preguntas
       const result = document.getElementById("result");
       const nextBtn = document.getElementById("nextModuleBtn");
       const submitBtn = document.getElementById("submitBtn");
 
-      if (wrong.length) {
-        const wrongList = wrong.map(k => Number(k.slice(1))).join(", ");
-        result.textContent = `Tu puntaje: ${score}/${total} — Revisa las preguntas: ${wrongList}.`;
-        nextBtn.style.display = "none";
-        submitBtn.style.display = "block";
-      } else {
-        result.textContent = `Tu puntaje: ${score}/${total}`;
+      if (score >= passingScore) {
+        result.textContent = `Tu puntaje: ${score} / ${total}`;
         submitBtn.style.display = "none";
         nextBtn.style.display = "block";
+      } else {
+        result.textContent = `Tu puntaje fue ${score}/${total}. Inténtalo nuevamente.`;
+        nextBtn.style.display = "none";
       }
 
       localStorage.setItem("quiz5_score", score);
     }
 
     function finishCourse() {
-      window.location.href = "formulario.html";
+      alert("🎉 ¡Gracias por completar el curso de capacitación! 🎉");
+      window.location.href = "gracias.html"; // puedes cambiar por tu página final
     }
   </script>
 
