@@ -87,18 +87,19 @@
     <p>
       Has completado exitosamente el curso de capacitación de <strong>PedidosYa Partners</strong>.<br><br>
       Gracias por tu compromiso y entusiasmo.  
-      Recuerda que puedes volver a los módulos cuando lo necesites para repasar los temas o reforzar tus conocimientos. 💪
+      Ahora puedes volver a ver los videos del curso cuando lo desees para repasar los temas. 💪
     </p>
 
-    <button class="btn" onclick="goToCourses()">Volver a los cursos</button>
+    <button class="btn" onclick="goToCourses()">Volver al curso</button>
     <p id="countdown">Serás redirigido en 10 segundos...</p>
   </div>
 
   <script>
     function goToCourses() {
-      // 🧹 Limpia progreso y redirige al menú de cursos
+      // 🔓 Activa el modo libre para repasar los videos
       localStorage.clear();
-      window.location.href = "curso.html"; // 
+      localStorage.setItem("modoLibre", "true");
+      window.location.href = "curso.html"; // 👈 Cambia si tu archivo principal del curso tiene otro nombre
     }
 
     // ⏳ Redirección automática con cuenta regresiva
@@ -118,4 +119,3 @@
 
 </body>
 </html>
-
