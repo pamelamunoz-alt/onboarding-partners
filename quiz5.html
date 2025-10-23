@@ -93,6 +93,13 @@
       animation: fadeIn 0.8s ease forwards;
     }
 
+    #mensaje {
+      margin-top: 20px;
+      font-weight: 600;
+      text-align: center;
+      color: var(--negro);
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -133,16 +140,15 @@
     </form>
 
     <div id="result"></div>
+    <div id="mensaje"></div>
 
     <button id="nextModuleBtn" onclick="finishCourse()">Finalizar curso</button>
   </div>
 
   <script>
-    const correctAnswers = {
-      q1: "a",
-      q2: "d",
-      q3: "c"
-    };
+    const correctAnswers = { q1: "a", q2: "d", q3: "c" };
+    const scriptURL = "https://script.google.com/macros/s/AKfycbya3FhpC-KCjwE6gNmMhOO-2umLDsIFAnJjHq-27Qu5XmSf3annoQp0C0PVsW_lPQTN/exec";
+    const mensaje = document.getElementById("mensaje");
 
     function getAnswer(name) {
       const el = document.querySelector(`input[name='${name}']:checked`);
@@ -160,7 +166,7 @@
       }
 
       const total = keys.length;
-      const passingScore = total === 5 ? 3 : 2; // ✅ 2 correctas si tiene 3 preguntas
+      const passingScore = 2; // ✅ Mínimo 2 correctas para aprobar
       const result = document.getElementById("result");
       const nextBtn = document.getElementById("nextModuleBtn");
       const submitBtn = document.getElementById("submitBtn");
@@ -173,14 +179,48 @@
         result.textContent = `Tu puntaje fue ${score}/${total}. Inténtalo nuevamente.`;
         nextBtn.style.display = "none";
       }
-
       localStorage.setItem("quiz5_score", score);
     }
 
     function finishCourse() {
-      // ✅ Limpia el progreso y redirige al cierre del curso
-      localStorage.clear();
-      window.location.href = "agradecimientos.html";
+      const nombre = localStorage.getItem("partner_nombre");
+      const local = localStorage.getItem("partner_local");
+      const telefono = localStorage.getItem("partner_tel");
+
+      if (!nombre || !local || !telefono) {
+        alert("⚠️ No se encontraron tus datos. Por favor, vuelve a iniciar el curso desde la página principal.");
+        return;
+      }
+
+      mensaje.textContent = "Registrando finalización...";
+      mensaje.style.color = "#FA0050";
+
+      const formData = new FormData();
+      formData.append("action", "finalizar");
+      formData.append("nombre", nombre);
+      formData.append("local", local);
+      formData.append("telefono", telefono);
+
+      fetch(scriptURL, { method: "POST", body: formData })
+        .then(r => r.text())
+        .then(resp => {
+          mensaje.textContent = "Curso finalizado correctamente.";
+          mensaje.style.color = "green";
+
+          // Limpia datos guardados
+          localStorage.removeItem("partner_nombre");
+          localStorage.removeItem("partner_local");
+          localStorage.removeItem("partner_tel");
+
+          // Redirige a agradecimientos
+          setTimeout(() => {
+            window.location.href = "agradecimientos.html";
+          }, 1500);
+        })
+        .catch(err => {
+          mensaje.textContent = "Error al registrar la finalización.";
+          mensaje.style.color = "red";
+        });
     }
   </script>
 
