@@ -96,13 +96,13 @@
 
   <script>
     function goToCourses() {
-      // 🔓 Activa el modo libre para repasar los videos
+      // Activa el modo libre para repasar los videos
       localStorage.clear();
       localStorage.setItem("modoLibre", "true");
-      window.location.href = "curso.html"; // 👈 Cambia si tu archivo principal del curso tiene otro nombre
+      window.location.href = "curso.html"; 
     }
 
-    // ⏳ Redirección automática con cuenta regresiva
+    //Redirección automática con cuenta regresiva
     let timeLeft = 10;
     const countdown = document.getElementById("countdown");
 
@@ -119,3 +119,4 @@
 
 </body>
 </html>
+
