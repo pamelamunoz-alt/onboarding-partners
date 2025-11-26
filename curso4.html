@@ -23,7 +23,7 @@
       font-family: "Poppins", sans-serif;
       background-color: var(--gris-oscuro);
       color: var(--blanco);
-      overflow-x: hidden; /* ✅ permite scroll vertical */
+      overflow-x: hidden;
     }
 
     /* --- SIDEBAR --- */
@@ -166,7 +166,7 @@
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-thumb { background-color: var(--rosa); border-radius: 10px; }
 
-    /* ✅ Tablets */
+    /* Tablets */
     @media (max-width: 900px) {
       body { flex-direction: column; }
       .sidebar {
@@ -183,7 +183,7 @@
       .video-title { font-size: 1.2rem; }
     }
 
-    /* ✅ Móviles */
+    /* Telefonos */
     @media (max-width: 600px) {
       .sidebar {
         flex-wrap: wrap;
@@ -270,4 +270,5 @@
     updateModules();
   </script>
 </body>
+
 </html>
