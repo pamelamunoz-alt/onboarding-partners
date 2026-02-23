@@ -97,7 +97,6 @@
 
   <script>
 
-    // 🔴 PEGA AQUÍ TU URL DEL APPS SCRIPT
     const scriptURL = "https://script.google.com/macros/s/AKfycbzgowHIC9STHoqRm6uMQSqSe13-EBWKBlSHIxSghJreHeEZTXL9Cgz2N_60nnkDGA--/exec";
 
     function goToCourses() {
@@ -113,7 +112,7 @@
       const telefono = localStorage.getItem("partner_tel");
 
       if (!nombre || !local || !telefono) {
-        console.log("No hay datos guardados en localStorage");
+        console.log("No hay datos en localStorage");
         return;
       }
 
@@ -126,20 +125,20 @@
           telefono: telefono
         })
       })
-      .then(res => res.blob())
-      .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        window.open(url, "_blank");
+      .then(res => res.json())   // 👈 AQUÍ ESTÁ EL CAMBIO IMPORTANTE
+      .then(data => {
+        if (data.url) {
+          window.open(data.url, "_blank");
+        } else {
+          console.error("No se recibió URL del diploma");
+        }
       })
       .catch(err => {
         console.error("Error generando diploma:", err);
       });
     }
 
-    // Genera el diploma automáticamente al cargar
-    window.onload = () => {
-      generarDiploma();
-    };
+    window.onload = generarDiploma;
 
     // Cuenta regresiva
     let timeLeft = 10;
