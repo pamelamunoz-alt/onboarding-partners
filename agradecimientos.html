@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>¡Gracias por participar! | PedidosYa Partners</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --rosa: #FA0050;
@@ -45,8 +47,7 @@
 
     p {
       font-size: 1.1rem;
-      margin-bottom: 25px;
-      color: #333;
+      margin-bottom: 20px;
       line-height: 1.6;
     }
 
@@ -80,14 +81,14 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="container">
-    <h1>🎉 ¡Gracias por participar! 🎉</h1>
+    <h1>🎉 ¡Felicidades! 🎉</h1>
     <p>
-      Has completado exitosamente el curso de capacitación de <strong>PedidosYa Partners</strong>.<br><br>
-      Gracias por tu compromiso y entusiasmo.  
-      Ahora puedes volver a ver los videos del curso cuando lo desees para repasar los temas. 💪
+      Has completado exitosamente el curso de <strong>PedidosYa Partners</strong>.<br><br>
+      Tu diploma se está generando automáticamente en una nueva pestaña.
     </p>
 
     <button class="btn" onclick="goToCourses()">Volver al curso</button>
@@ -95,14 +96,52 @@
   </div>
 
   <script>
+
+    // 🔴 PEGA AQUÍ TU URL DEL APPS SCRIPT
+    const scriptURL = "PEGA_AQUI_TU_URL_DEL_SCRIPT";
+
     function goToCourses() {
-      // Activa el modo libre para repasar los videos
       localStorage.clear();
       localStorage.setItem("modoLibre", "true");
-      window.location.href = "curso.html"; 
+      window.location.href = "curso.html";
     }
 
-    //Redirección automática con cuenta regresiva
+    function generarDiploma() {
+
+      const nombre   = localStorage.getItem("partner_nombre");
+      const local    = localStorage.getItem("partner_local");
+      const telefono = localStorage.getItem("partner_tel");
+
+      if (!nombre || !local || !telefono) {
+        console.log("No hay datos guardados en localStorage");
+        return;
+      }
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: new URLSearchParams({
+          action: "finalizar",
+          nombre: nombre,
+          local: local,
+          telefono: telefono
+        })
+      })
+      .then(res => res.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, "_blank");
+      })
+      .catch(err => {
+        console.error("Error generando diploma:", err);
+      });
+    }
+
+    // Genera el diploma automáticamente al cargar
+    window.onload = () => {
+      generarDiploma();
+    };
+
+    // Cuenta regresiva
     let timeLeft = 10;
     const countdown = document.getElementById("countdown");
 
@@ -115,8 +154,8 @@
         goToCourses();
       }
     }, 1000);
+
   </script>
 
 </body>
 </html>
-
