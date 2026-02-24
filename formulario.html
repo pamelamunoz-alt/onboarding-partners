@@ -112,7 +112,9 @@
   </form>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxTqWkRa8TBGd_oWN-Yp-vSlbZHK6grjWS50_3GcFIjMNR9NC49zxmHjR8BKnbUZgms/exec";
+    // ✅ Nuevo endpoint
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzgowHIC9STHoqRm6uMQSqSe13-EBWKBlSHIxSghJreHeEZTXL9Cgz2N_60nnkDGA--/exec";
+
     const form = document.getElementById("inicioForm");
     const mensaje = document.getElementById("mensaje");
 
@@ -122,24 +124,30 @@
       mensaje.style.color = "#FA0050";
 
       const formData = new FormData(form);
-      formData.append("action", "inicio"); // Indicamos que es el inicio
+      formData.append("action", "inicio");
 
       fetch(scriptURL, { method: "POST", body: formData })
-        .then(response => {
+        .then(() => {
           mensaje.textContent = "Inicio registrado con éxito";
           mensaje.style.color = "green";
 
-          // Guardamos datos localmente para la página de finalización
+          // ✅ Guardar datos para finalizar (lo que ya tenías)
           localStorage.setItem("partner_nombre", formData.get("nombre"));
           localStorage.setItem("partner_local", formData.get("local"));
           localStorage.setItem("partner_tel", formData.get("telefono"));
+
+          // ✅ NUEVO: guardar el nombre para el diploma (clave que usará diploma.html)
+          localStorage.setItem("curso_nombre", formData.get("nombre"));
+
+          // (Opcional) Si quieres mostrar el local también en el diploma:
+          localStorage.setItem("curso_local", formData.get("local"));
 
           // Espera 1.5 segundos y redirige al curso
           setTimeout(() => {
             window.location.href = "curso.html";
           }, 1500);
         })
-        .catch(error => {
+        .catch(() => {
           mensaje.textContent = "Ocurrió un error al registrar el inicio.";
           mensaje.style.color = "red";
         });
