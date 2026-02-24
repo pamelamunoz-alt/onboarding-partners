@@ -27,6 +27,7 @@
       height: 100vh;
       text-align: center;
       color: var(--negro);
+      padding: 20px;
     }
 
     .container {
@@ -35,7 +36,8 @@
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
       padding: 40px 50px;
       max-width: 600px;
-      animation: fadeIn 1s ease;
+      width: 100%;
+      animation: fadeIn 0.8s ease;
     }
 
     h1 {
@@ -49,6 +51,7 @@
       font-size: 1.1rem;
       margin-bottom: 20px;
       line-height: 1.6;
+      color: #333;
     }
 
     .btn {
@@ -61,11 +64,13 @@
       cursor: pointer;
       transition: 0.3s;
       font-size: 1rem;
+      width: 100%;
+      max-width: 300px;
     }
 
     .btn:hover {
       background-color: #ff3377;
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
 
     #countdown {
@@ -76,8 +81,8 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -88,7 +93,7 @@
     <h1>🎉 ¡Felicidades! 🎉</h1>
     <p>
       Has completado exitosamente el curso de <strong>PedidosYa Partners</strong>.<br><br>
-      Tu diploma se está generando automáticamente en una nueva pestaña.
+      Tu diploma se abrirá automáticamente en una nueva pestaña.
     </p>
 
     <button class="btn" onclick="goToCourses()">Volver al curso</button>
@@ -116,28 +121,19 @@
         return;
       }
 
-      fetch(scriptURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          action: "finalizar",
-          nombre: nombre,
-          local: local,
-          telefono: telefono
-        })
-      })
-      .then(res => res.json())   // 👈 AQUÍ ESTÁ EL CAMBIO IMPORTANTE
-      .then(data => {
-        if (data.url) {
-          window.open(data.url, "_blank");
-        } else {
-          console.error("No se recibió URL del diploma");
-        }
-      })
-      .catch(err => {
-        console.error("Error generando diploma:", err);
-      });
+      // 🔥 Construimos URL GET para activar redirect del Apps Script
+      const urlFinal =
+        scriptURL +
+        "?action=finalizar" +
+        "&nombre=" + encodeURIComponent(nombre) +
+        "&local=" + encodeURIComponent(local) +
+        "&telefono=" + encodeURIComponent(telefono);
+
+      // 🔥 Abrimos nueva pestaña (esto sí dispara el PDF)
+      window.open(urlFinal, "_blank");
     }
 
+    // Generar diploma automáticamente al cargar
     window.onload = generarDiploma;
 
     // Cuenta regresiva
