@@ -83,7 +83,7 @@
   <div class="card">
     <h1>🎉 ¡Felicidades!</h1>
 
-    <p id="mensaje">
+    <p>
       Has completado exitosamente el curso de <strong>PedidosYa Partners</strong>.
       <br><br>
       Haz clic abajo para descargar tu diploma.
@@ -119,7 +119,8 @@
         return;
       }
 
-      document.getElementById("loading").style.display = "block";
+      const loading = document.getElementById("loading");
+      loading.style.display = "block";
 
       try {
 
@@ -132,21 +133,19 @@
           body: formData
         });
 
-        const result = await response.text();
+        const data = await response.json();
 
-        // Si devuelve HTML (cuando genera diploma)
-        if (result.includes("<script>")) {
-          document.open();
-          document.write(result);
-          document.close();
+        loading.style.display = "none";
+
+        if (data.ok && data.downloadUrl) {
+          window.location.href = data.downloadUrl;
         } else {
-          document.getElementById("loading").style.display = "none";
-          alert(result);
+          alert(data.error || "No se pudo generar el diploma.");
         }
 
       } catch (error) {
-        document.getElementById("loading").style.display = "none";
-        alert("Error al generar diploma.");
+        loading.style.display = "none";
+        alert("Error al conectar con el servidor.");
         console.error(error);
       }
     }
