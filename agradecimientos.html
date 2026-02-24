@@ -124,8 +124,12 @@
   </div>
 
   <script>
-    // Mostrar nombre (opcional, solo para que se vea bonito)
-    const nombre = localStorage.getItem("curso_nombre");
+    // Mostrar nombre (opcional)
+    const nombre =
+      localStorage.getItem("curso_nombre") ||
+      localStorage.getItem("partner_nombre") ||
+      "";
+
     const nameNote = document.getElementById("nameNote");
     if (nombre) {
       nameNote.textContent = `Diploma listo a nombre de: ${nombre}`;
@@ -133,13 +137,14 @@
       nameNote.textContent = `Tip: si no ves tu nombre en el diploma, vuelve al inicio y escribe tus datos.`;
     }
 
+    // ✅ FIX: pasar nombre por URL como backup
     function goToDiploma() {
-      window.location.href = "diploma.html";
+      const nombreSafe = encodeURIComponent(nombre || "");
+      window.location.href = "diploma.html?nombre=" + nombreSafe;
     }
 
     function goToCourses() {
-      // NO usar localStorage.clear() porque borra el nombre del diploma.
-      // Solo activa modo libre para desbloquear todos los videos.
+      // No borrar todo el storage (nada de localStorage.clear())
       localStorage.setItem("modoLibre", "true");
       window.location.href = "curso.html";
     }

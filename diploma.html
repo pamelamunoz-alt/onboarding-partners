@@ -166,7 +166,6 @@
     }
 
     @media (max-width: 1200px){
-      /* Para pantallas chicas: que no se salga. Se exporta igual. */
       .stage{ overflow:auto; }
     }
   </style>
@@ -243,18 +242,28 @@
 
   <script>
     function hoyGT() {
-      // Fecha tipo dd/mm/yyyy en Guatemala
       const d = new Date();
       return d.toLocaleDateString("es-GT");
     }
 
+    function getNombreParticipante() {
+      const params = new URLSearchParams(window.location.search);
+      const nombreURL = (params.get("nombre") || "").trim();
+
+      return (
+        nombreURL ||
+        localStorage.getItem("curso_nombre") ||
+        localStorage.getItem("partner_nombre") ||
+        "Nombre Apellido"
+      );
+    }
+
     function setDiplomaData() {
-      const nombre = localStorage.getItem("curso_nombre") || "Nombre Apellido";
+      const nombre = getNombreParticipante();
       document.getElementById("outNombre").textContent = nombre;
       document.getElementById("outFecha").textContent = hoyGT();
       document.getElementById("footerName").textContent = "Onboarding Partners";
 
-      // Código simple
       const year = new Date().getFullYear();
       const code = "PY-" + year + "-" + String(Math.floor(Math.random() * 9999)).padStart(4, "0");
       document.getElementById("codigo").textContent = code;
@@ -285,13 +294,14 @@
 
       pdf.addImage(imgData, "PNG", x, y, w, h, undefined, "FAST");
 
-      const nombre = (localStorage.getItem("curso_nombre") || "participante")
+      const nombreBase = getNombreParticipante();
+      const nombreArchivo = nombreBase
         .trim()
         .replace(/\s+/g, "_")
         .replace(/[^\w\-]/g, "")
         .toLowerCase();
 
-      pdf.save(`diploma_${nombre}.pdf`);
+      pdf.save(`diploma_${nombreArchivo || "participante"}.pdf`);
     }
 
     function volverCurso() {
