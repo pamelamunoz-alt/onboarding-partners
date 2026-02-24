@@ -1,154 +1,159 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>¡Gracias por participar! | PedidosYa Partners</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diploma - PedidosYa Partners</title>
 
   <style>
-    :root {
-      --rosa: #FA0050;
-      --celeste: #61C8FA;
-      --blanco: #FFFFFF;
-      --gris-fondo: #F7F7F7;
-      --negro: #111217;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      font-family: "Poppins", sans-serif;
-      background-color: var(--gris-fondo);
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      text-align: center;
-      color: var(--negro);
-      padding: 20px;
+      margin: 0;
     }
 
-    .container {
-      background: var(--blanco);
+    .card {
+      background: white;
+      padding: 50px;
       border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      padding: 40px 50px;
-      max-width: 600px;
-      width: 100%;
-      animation: fadeIn 0.8s ease;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
     }
 
     h1 {
-      color: var(--rosa);
-      font-size: 2rem;
-      font-weight: 800;
+      color: #FA0050;
+      font-size: 32px;
       margin-bottom: 20px;
     }
 
     p {
-      font-size: 1.1rem;
-      margin-bottom: 20px;
-      line-height: 1.6;
-      color: #333;
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 30px;
     }
 
     .btn {
-      background-color: var(--rosa);
-      color: var(--blanco);
-      border: none;
-      padding: 14px 36px;
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
       border-radius: 10px;
-      font-weight: 600;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
       transition: 0.3s;
-      font-size: 1rem;
-      width: 100%;
-      max-width: 300px;
-      margin-top: 10px;
     }
 
-    .btn:hover {
-      background-color: #ff3377;
-      transform: scale(1.03);
+    .btn-primary {
+      background: #FA0050;
+      color: white;
     }
 
-    #countdown {
-      color: var(--celeste);
-      font-weight: 600;
+    .btn-primary:hover {
+      background: #d60045;
+    }
+
+    .btn-secondary {
+      background: #ff2e70;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #e6005c;
+    }
+
+    .loading {
       margin-top: 15px;
-      font-size: 1rem;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
+      font-size: 14px;
+      color: #61C8FA;
+      display: none;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
-    <h1>🎉 ¡Felicidades! 🎉</h1>
-    <p>
-      Has completado exitosamente el curso de <strong>PedidosYa Partners</strong>.<br><br>
+  <div class="card">
+    <h1>🎉 ¡Felicidades!</h1>
+
+    <p id="mensaje">
+      Has completado exitosamente el curso de <strong>PedidosYa Partners</strong>.
+      <br><br>
       Haz clic abajo para descargar tu diploma.
     </p>
 
-    <button class="btn" onclick="generarDiploma()">Descargar mi diploma</button>
-    <button class="btn" onclick="goToCourses()">Volver al curso</button>
+    <button class="btn btn-primary" onclick="descargarDiploma()">
+      Descargar mi diploma
+    </button>
 
-    <p id="countdown">Serás redirigido en 10 segundos...</p>
+    <button class="btn btn-secondary" onclick="volverAlCurso()">
+      Volver al curso
+    </button>
+
+    <div class="loading" id="loading">
+      Generando diploma...
+    </div>
   </div>
 
   <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzgowHIC9STHoqRm6uMQSqSe13-EBWKBlSHIxSghJreHeEZTXL9Cgz2N_60nnkDGA--/exec";
 
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzgowHIC9STHoqRm6uMQSqSe13-EBWKBlSHIxSghJreHeEZTXL9Cgz2N_60nnkDGA--/exec";
+    const params = new URLSearchParams(window.location.search);
+    const nombre = params.get("nombre");
 
-    function goToCourses() {
-      localStorage.clear();
-      localStorage.setItem("modoLibre", "true");
-      window.location.href = "curso.html";
+    if (!nombre) {
+      alert("No se encontró el nombre del participante.");
     }
 
-    function generarDiploma() {
+    async function descargarDiploma() {
 
-      const nombre   = localStorage.getItem("partner_nombre");
-      const local    = localStorage.getItem("partner_local");
-      const telefono = localStorage.getItem("partner_tel");
-
-      if (!nombre || !local || !telefono) {
-        alert("No se encontraron datos del participante.");
+      if (!nombre) {
+        alert("Nombre no válido.");
         return;
       }
 
-      const urlFinal =
-        scriptURL +
-        "?action=finalizar" +
-        "&nombre=" + encodeURIComponent(nombre) +
-        "&local=" + encodeURIComponent(local) +
-        "&telefono=" + encodeURIComponent(telefono);
+      document.getElementById("loading").style.display = "block";
 
-      // Esto funciona porque viene de un click real
-      window.open(urlFinal, "_blank");
+      try {
+
+        const formData = new URLSearchParams();
+        formData.append("action", "finalizar");
+        formData.append("nombre", nombre);
+
+        const response = await fetch(WEB_APP_URL, {
+          method: "POST",
+          body: formData
+        });
+
+        const result = await response.text();
+
+        // Si devuelve HTML (cuando genera diploma)
+        if (result.includes("<script>")) {
+          document.open();
+          document.write(result);
+          document.close();
+        } else {
+          document.getElementById("loading").style.display = "none";
+          alert(result);
+        }
+
+      } catch (error) {
+        document.getElementById("loading").style.display = "none";
+        alert("Error al generar diploma.");
+        console.error(error);
+      }
     }
 
-    // Cuenta regresiva
-    let timeLeft = 10;
-    const countdown = document.getElementById("countdown");
-
-    const timer = setInterval(() => {
-      timeLeft--;
-      countdown.textContent = `Serás redirigido en ${timeLeft} segundos...`;
-
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-        goToCourses();
-      }
-    }, 1000);
-
+    function volverAlCurso() {
+      window.location.href = "index.html";
+    }
   </script>
 
 </body>
