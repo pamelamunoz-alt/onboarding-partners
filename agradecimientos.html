@@ -66,6 +66,7 @@
       font-size: 1rem;
       width: 100%;
       max-width: 300px;
+      margin-top: 10px;
     }
 
     .btn:hover {
@@ -93,10 +94,12 @@
     <h1>🎉 ¡Felicidades! 🎉</h1>
     <p>
       Has completado exitosamente el curso de <strong>PedidosYa Partners</strong>.<br><br>
-      Tu diploma se abrirá automáticamente en una nueva pestaña.
+      Haz clic abajo para descargar tu diploma.
     </p>
 
+    <button class="btn" onclick="generarDiploma()">Descargar mi diploma</button>
     <button class="btn" onclick="goToCourses()">Volver al curso</button>
+
     <p id="countdown">Serás redirigido en 10 segundos...</p>
   </div>
 
@@ -117,11 +120,10 @@
       const telefono = localStorage.getItem("partner_tel");
 
       if (!nombre || !local || !telefono) {
-        console.log("No hay datos en localStorage");
+        alert("No se encontraron datos del participante.");
         return;
       }
 
-      // 🔥 Construimos URL GET para activar redirect del Apps Script
       const urlFinal =
         scriptURL +
         "?action=finalizar" +
@@ -129,12 +131,9 @@
         "&local=" + encodeURIComponent(local) +
         "&telefono=" + encodeURIComponent(telefono);
 
-      // 🔥 Abrimos nueva pestaña (esto sí dispara el PDF)
+      // Esto funciona porque viene de un click real
       window.open(urlFinal, "_blank");
     }
-
-    // Generar diploma automáticamente al cargar
-    window.onload = generarDiploma;
 
     // Cuenta regresiva
     let timeLeft = 10;
