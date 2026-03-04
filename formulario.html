@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inicio de curso | PedidosYa Partners</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --rosa: #FA0050;
@@ -61,10 +62,41 @@
     input {
       width: 100%;
       padding: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 5px;
       border-radius: 10px;
       border: 1px solid #ccc;
       font-family: "Poppins", sans-serif;
+    }
+
+    /* AUTOCOMPLETE */
+    .autocomplete-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    #autocomplete-list {
+      position: absolute;
+      top: 48px;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      max-height: 180px;
+      overflow-y: auto;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      z-index: 9999;
+      display: none;
+    }
+
+    #autocomplete-list div {
+      padding: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #autocomplete-list div:hover {
+      background: #ffe3ef;
     }
 
     button {
@@ -78,6 +110,7 @@
       transition: 0.3s;
       width: 100%;
       font-size: 1rem;
+      margin-top: 20px;
     }
 
     button:hover {
@@ -92,67 +125,123 @@
     }
   </style>
 </head>
+
 <body>
 
   <h1>¡Bienvenido al curso de Autogestión!</h1>
-  <p>Aprende a gestionar tu negocio de forma eficiente, optimizando tus pedidos, mejorando la atención y potenciando el crecimiento de tu local dentro de la plataforma PedidosYa.</p>
+  <p>Aprende a gestionar tu negocio de forma eficiente y potenciar el crecimiento de tu local dentro de la plataforma PedidosYa.</p>
 
   <form id="inicioForm">
-    <label for="local">Nombre del local (igual como figura en tu POS o sistema de recepción)</label>
-    <input type="text" id="local" name="local" placeholder="Ej: La Pizzería de Juan" required>
+    
+    <label>Nombre del local</label>
+    <div class="autocomplete-wrapper">
+      <input type="text" id="local" name="local" placeholder="Escribe el nombre del local..." required autocomplete="off">
+      <div id="autocomplete-list"></div>
+    </div>
 
-    <label for="nombre">Nombre del participante</label>
-    <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" required>
+    <label>Nombre del participante</label>
+    <input type="text" id="nombre" name="nombre" required>
 
-    <label for="telefono">Número de teléfono</label>
-    <input type="tel" id="telefono" name="telefono" placeholder="Ej: 55555555" required pattern="[0-9]{4}[0-9]{4}">
+    <label>Número de teléfono</label>
+    <input type="tel" id="telefono" name="telefono" required pattern="[0-9]{8}">
 
     <button type="submit">Iniciar curso</button>
     <div id="mensaje"></div>
   </form>
 
-  <script>
-    // ✅ Nuevo endpoint
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzgowHIC9STHoqRm6uMQSqSe13-EBWKBlSHIxSghJreHeEZTXL9Cgz2N_60nnkDGA--/exec";
+<script>
 
-    const form = document.getElementById("inicioForm");
-    const mensaje = document.getElementById("mensaje");
+  // 🔹 URL que trae la lista de partners
+  const partnersURL = "https://script.google.com/macros/s/AKfycbwPPOYTOCG5UFx_yW7OzeyWfrT4MfdY5GaWVMcKchm04N2xbbAwN60PjAd0Gl7nLlJa/exec";
 
-    form.addEventListener("submit", e => {  
-      e.preventDefault();
-      mensaje.textContent = "Registrando inicio...";
-      mensaje.style.color = "#FA0050";
+  // 🔹 URL que registra el inicio (la que ya usabas)
+  const inicioURL = "https://script.google.com/macros/s/AKfycbzgowHIC9STHoqRm6uMQSqSe13-EBWKBlSHIxSghJreHeEZTXL9Cgz2N_60nnkDGA--/exec";
 
-      const formData = new FormData(form);
-      formData.append("action", "inicio");
+  const form = document.getElementById("inicioForm");
+  const mensaje = document.getElementById("mensaje");
+  const localInput = document.getElementById("local");
+  const list = document.getElementById("autocomplete-list");
 
-      fetch(scriptURL, { method: "POST", body: formData })
-        .then(() => {
-          mensaje.textContent = "Inicio registrado con éxito";
-          mensaje.style.color = "green";
+  let partners = [];
 
-          // ✅ Guardar datos para finalizar (lo que ya tenías)
-          localStorage.setItem("partner_nombre", formData.get("nombre"));
-          localStorage.setItem("partner_local", formData.get("local"));
-          localStorage.setItem("partner_tel", formData.get("telefono"));
-
-          // ✅ NUEVO: guardar el nombre para el diploma (clave que usará diploma.html)
-          localStorage.setItem("curso_nombre", formData.get("nombre"));
-
-          // (Opcional) Si quieres mostrar el local también en el diploma:
-          localStorage.setItem("curso_local", formData.get("local"));
-
-          // Espera 1.5 segundos y redirige al curso
-          setTimeout(() => {
-            window.location.href = "curso.html";
-          }, 1500);
-        })
-        .catch(() => {
-          mensaje.textContent = "Ocurrió un error al registrar el inicio.";
-          mensaje.style.color = "red";
-        });
+  // Cargar lista de partners
+  fetch(`${partnersURL}?action=getPartners`)
+    .then(res => res.json())
+    .then(data => {
+      partners = data.partners || [];
     });
-  </script>
+
+  // Autocomplete
+  localInput.addEventListener("input", () => {
+    const val = localInput.value.toLowerCase();
+    list.innerHTML = "";
+
+    if (val.length < 2) {
+      list.style.display = "none";
+      return;
+    }
+
+    const matches = partners
+      .filter(p => p.toLowerCase().includes(val))
+      .slice(0, 12);
+
+    if (!matches.length) {
+      list.style.display = "none";
+      return;
+    }
+
+    matches.forEach(p => {
+      const div = document.createElement("div");
+      div.textContent = p;
+      div.onclick = () => {
+        localInput.value = p;
+        list.style.display = "none";
+      };
+      list.appendChild(div);
+    });
+
+    list.style.display = "block";
+  });
+
+  // Cerrar lista si se hace click fuera
+  document.addEventListener("click", e => {
+    if (!e.target.closest(".autocomplete-wrapper")) {
+      list.style.display = "none";
+    }
+  });
+
+  // Submit
+  form.addEventListener("submit", e => {  
+    e.preventDefault();
+
+    mensaje.textContent = "Registrando inicio...";
+    mensaje.style.color = "#FA0050";
+
+    const formData = new FormData(form);
+    formData.append("action", "inicio");
+
+    fetch(inicioURL, { method: "POST", body: formData })
+      .then(() => {
+        mensaje.textContent = "Inicio registrado con éxito";
+        mensaje.style.color = "green";
+
+        localStorage.setItem("partner_nombre", formData.get("nombre"));
+        localStorage.setItem("partner_local", formData.get("local"));
+        localStorage.setItem("partner_tel", formData.get("telefono"));
+        localStorage.setItem("curso_nombre", formData.get("nombre"));
+        localStorage.setItem("curso_local", formData.get("local"));
+
+        setTimeout(() => {
+          window.location.href = "curso.html";
+        }, 1500);
+      })
+      .catch(() => {
+        mensaje.textContent = "Ocurrió un error al registrar el inicio.";
+        mensaje.style.color = "red";
+      });
+  });
+
+</script>
 
 </body>
 </html>
